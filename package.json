@@ -20,6 +20,8 @@
     "vite": "^2.9.2"
   },
   "dependencies": {
+    "@types/d3-interpolate": "^3.0.1",
+    "d3-interpolate": "^3.0.1",
     "sass": "^1.50.0"
   }
 }

@@ -1,5 +1,88 @@
 <script lang='ts'>
 
+  import { tweened } from "svelte/motion";
+  import { sineOut } from "svelte/easing";
+
+  let now_curr = 0;
+  let now_data = [
+    {
+      title: "Korea",
+      body: `
+      i’m moving to Korea to learn the language and for the cultural experience.<br>
+      why Korea? no particular reason; there are no travel restrictions [, for americans] and i did taekwondo as a kid so there’s a bit of familiarity.<br>
+      how long? the original plan was to stay for 6 months, but we shall see... 
+      `
+    },
+    {
+      title: "skateboarding",
+      body: `
+      i skateboard, there's not much else to say about this.<br>
+      a part one day though, fs.
+      `
+    },
+    {
+      title: "sewing",
+      body: `
+      designing and making clothes is fun + it reminds me of my late grandmother 🥰 (she was a seemstress).<br>
+      im still super new, but definitely added the life repertoire.
+      `
+    },
+  ];
+
+  $: now = now_data[now_curr];
+
+  const now_title = tweened("", {
+    duration: 1000,
+    easing: sineOut, // make typing easing function (noise?)
+    interpolate: interpolateText
+  });
+
+  const now_body = tweened("", {
+    duration: 2000,
+    delay: 500,
+    easing: sineOut,
+    interpolate: interpolateText
+  });
+
+  $: $now_title = now.title;
+  $: $now_body = now.body;
+
+  function nowBubbleClick(event: MouseEvent) {
+    const target = event.currentTarget as HTMLElement;
+    now_curr = parseInt(target.getAttribute("data"));
+  }
+
+  function nowWheel(event: WheelEvent) {
+    console.log("wheel");
+    if (now_data[now_curr] != now || $now_title != now.title || $now_body != now.body) return;
+    event.deltaX > +1 ? now_curr++ :
+    event.deltaX < -1 ? now_curr-- :
+    event.deltaY > +0 ? now_curr++ :
+    event.deltaY < -0 ? now_curr-- : "";
+    now_curr = wrap(now_curr, 0, now_data.length-1);
+    console.log(now_curr);
+    
+  }
+
+  function interpolateText(a: string, b: string) {
+    return (t: number) => {
+      // kinda cute ngl 💅
+      let result = 
+        t < 0.5 ?
+        a.slice(0, a.length * (1-t*2)) : 
+        b.slice(0, b.length * (t-0.5)*2);
+      return result;
+    }
+  }
+
+  function wrap(a: number, min: number, max: number) {
+    a = 
+      a > max ? min :
+      a < min ? max :
+      a;
+    return a;
+  }
+
 </script>
 
 <main>
@@ -24,10 +107,21 @@
   </section>
 
   <section id="now">
-    <h3 class="section-label">now</h3>
-    <div class="now-part">
-      <h4 class="now-title"> Korea </h4>
-      <p class="now-desc">i’m moving to Korea to learn the language and for the cultural experience. why Korea? no particular reason; there are no travel restrictions [, for americans] and i did taekwondo as a kid so there’s a bit of familiarity. how long? the original plan was to stay for 6 months, but we shall see...</p>
+    <span>
+      <h3 class="section-label">now</h3>
+      {#each now_data as now, i}
+        <span
+        data={`${i}`}
+        class="now-bubble {i == now_curr ? `curr` : ``}"
+        on:click={nowBubbleClick}
+        ></span>
+      {/each}
+    </span>
+    <div 
+    class="now-part"
+    on:wheel={nowWheel}>
+      <h4 class="now-title"> {$now_title} </h4>
+      <p class="now-desc"> {@html $now_body} </p>
     </div>
   </section>
   
@@ -87,6 +181,7 @@
       font-size: 1em;
       font-weight: normal;
       margin-bottom: 10px;
+      display: inline-block;
     }
   }
 
@@ -113,6 +208,20 @@
 
   #now {
     grid-area: 3 / 6 / 5 / 8;
+
+    
+    .now-bubble {
+      background-color: rgba(0, 0, 0, 0.25);
+      width: .3em;
+      height: .3em;
+      border-radius: 100%;
+      display: inline-block;
+      margin-left: 10px;
+
+      &.curr {
+        background-color: black;
+      }
+    }
   }
 
   .now-part {
@@ -129,7 +238,9 @@
       letter-spacing: 1.5;
       line-height: 1.5;
       margin-bottom: 20px;
+      word-break: break-word;
     }
+
   }
 
   @media screen and (min-width: 1024px) {
@@ -141,12 +252,10 @@
     }
 
     header {
-      margin-bottom: -1em;
-
-      h1 {
-        align-self: flex-end;
-      }
-
+      margin: 0 0 -1em 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
     }
 
     section {
