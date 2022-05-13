@@ -1,0 +1,1 @@
+geth --datadir geth --networkid 1313 --unlock 0x365eeb3a0f710ca834cec1749809c988734e02d8 --mine --http --http.corsdomain '*' --allow-insecure-unlock

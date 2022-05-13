@@ -1,270 +1,100 @@
-<script lang='ts'>
-
-  import { tweened } from "svelte/motion";
-  import { sineOut } from "svelte/easing";
-
-  let now_curr = 0;
-  let now_data = [
-    {
-      title: "Korea",
-      body: `
-      i’m moving to Korea to learn the language and for the cultural experience.<br>
-      why Korea? no particular reason; there are no travel restrictions [, for americans] and i did taekwondo as a kid so there’s a bit of familiarity.<br>
-      how long? the original plan was to stay for 6 months, but we shall see... 
-      `
-    },
-    {
-      title: "skateboarding",
-      body: `
-      i skateboard, there's not much else to say about this.<br>
-      a part one day though, fs.
-      `
-    },
-    {
-      title: "sewing",
-      body: `
-      designing and making clothes is fun + it reminds me of my late grandmother 🥰 (she was a seemstress).<br>
-      im still super new, but definitely added the life repertoire.
-      `
-    },
-  ];
-
-  $: now = now_data[now_curr];
-
-  const now_title = tweened("", {
-    duration: 1000,
-    easing: sineOut, // make typing easing function (noise?)
-    interpolate: interpolateText
-  });
-
-  const now_body = tweened("", {
-    duration: 2000,
-    delay: 500,
-    easing: sineOut,
-    interpolate: interpolateText
-  });
-
-  $: $now_title = now.title;
-  $: $now_body = now.body;
-
-  function nowBubbleClick(event: MouseEvent) {
-    const target = event.currentTarget as HTMLElement;
-    now_curr = parseInt(target.getAttribute("data"));
-  }
-
-  function nowWheel(event: WheelEvent) {
-    console.log("wheel");
-    if (now_data[now_curr] != now || $now_title != now.title || $now_body != now.body) return;
-    event.deltaX > +1 ? now_curr++ :
-    event.deltaX < -1 ? now_curr-- :
-    event.deltaY > +0 ? now_curr++ :
-    event.deltaY < -0 ? now_curr-- : "";
-    now_curr = wrap(now_curr, 0, now_data.length-1);
-    console.log(now_curr);
-    
-  }
-
-  function interpolateText(a: string, b: string) {
-    return (t: number) => {
-      // kinda cute ngl 💅
-      let result = 
-        t < 0.5 ?
-        a.slice(0, a.length * (1-t*2)) : 
-        b.slice(0, b.length * (t-0.5)*2);
-      return result;
-    }
-  }
-
-  function wrap(a: number, min: number, max: number) {
-    a = 
-      a > max ? min :
-      a < min ? max :
-      a;
-    return a;
-  }
-
+<script lang="ts">
+  import piccy from "./assets/piccy.png";
 </script>
 
-<main>
-  <header>
-    <h1>jordan bailey</h1>
-    <p>multidisciplinary autodidact</p>
-  </header>
+<main
+  class="
+  flex flex-col gap-8
+  mx-auto w-5/6 pb-10
+  font-sans font-bold
+  sm:w-2/3
+  md:w-1/2 md:text-lg 
+  lg:py-32 lg:flex-row lg:justify-center">
 
-  <section id="works">
-    <h3 class="section-label">works</h3>
-    <ul class="works-list">
-      <li class="work-item">
-        <a class="work-name" target=_blank href="https://60fov.gitlab.io/krt/">krt<span class="work-desc">korean typing app</span></a>
-      </li>
-      <li class="work-item">
-        <a class="work-name" target=_blank href="https://github.com/60fov/softsrv">softsrv<span class="work-desc">software renderer</span></a>
-      </li>
-      <li class="work-item">
-        <a class="work-name" target=_blank href="https://www.urbandictionary.com/define.php?term=soon%20%28tm%29">0xGarden<span class="work-desc">blockchain garden</span></a>
-      </li>
-    </ul>
-  </section>
+  <div class="
+    flex flex-col h-fit pt-8
+    lg:pt-0 lg:w-1/3 lg:top-32 lg:sticky">
+      <img src={piccy} alt="me" 
+        class="
+        rounded-lg w-full aspect-[21/9] object-cover object-bottom
+        lg:aspect-square lg:mb-4" />
+      <div>
+        <div class="ml-2 text-2xl space-y-2 hidden">
+          <p> <a href="#works">works</a> </p>
+          <p> <a href="#now">now</a> </p>
+          <p> <a href="#socials">socials</a> </p>
+          <p> <a href="#contact">contact</a> </p>
+        </div>
+      </div>
+  </div>
 
-  <section id="now">
-    <span>
-      <h3 class="section-label">now</h3>
-      {#each now_data as now, i}
-        <span
-        data={`${i}`}
-        class="now-bubble {i == now_curr ? `curr` : ``}"
-        on:click={nowBubbleClick}
-        ></span>
-      {/each}
-    </span>
-    <div 
-    class="now-part"
-    on:wheel={nowWheel}>
-      <h4 class="now-title"> {$now_title} </h4>
-      <p class="now-desc"> {@html $now_body} </p>
+  <div class="w-full space-y-9">
+    <div class="space-y-8">
+      <h1 class="text-3xl md:text-4xl">I'm Jordan Bailey 👋🏾</h1>
+      <p> i code, design, teach, among other things. </p>
+      <p> accessible quality education for all.  </p>
+      <p> i enjoy learning about various systems, e.g. engines, game mechanics, computer graphics. </p>
+      <p> i play(ed) video games mostly movement shooters, e.g. quake, cs, apex. </p>
     </div>
-  </section>
-  
+
+    <div class="space-y-4">
+      <h2 class="text-2xl md:text-3xl" id="works">works</h2>
+      <p>things i've made:</p>
+      <ul class="pb-4">
+        <li> <a class="underline" href="http://60fov.gitlab.io/krt" target="_blank">KRT, korean typing app</a> </li>
+        <li> <a class="underline" href="http://60fov.github.io/gbp" target="_blank">gbp, a very vanilla side-scroller</a> </li>
+      </ul>
+      <p>things i've written:</p>
+      <ul>
+        <li> <a class="underline" 
+            href="https://ilybb4l.notion.site/Learning-Ethereum-d5731bfb802241b8a741c676203e078c" 
+            target="_blank">Learning Ethereum</a>
+        </li>
+        <li> <a class="underline"
+            href="https://ilybb4l.notion.site/L-Systems-5bd740a3341749aca0d756b95ff3adc2"
+            target="_blank">L-Systems</a>
+        </li>
+        <li> <a class="underline"
+            href="https://ilybb4l.notion.site/NFT-Perspective-8472f264a51b4d4a9e05db4cb5df7443"
+            target="_target">NFT Perspective</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="space-y-4">
+      <h2 class="text-2xl md:text-3xl" id="now">now</h2>
+      <p>visiting korea.</p>
+      <p>designing and making clothes.</p>
+    </div>
+
+    <div class="space-y-4">
+      <h2 class="text-2xl md:text-3xl" id="socials">socials</h2>
+      <p class="space-x-2">
+        <a class="underline" target="_blank" href="https://www.behance.net/jordanbailey12"> behance </a>
+        <a class="underline" target="_blank" href="https://github.com/60fov"> github </a>
+        <a class="underline" target="_blank" href="https://t.me/personalcontext"> telegram </a>
+        <a class="underline" target="_blank" href="https://www.twitter.com/personalcontext"> twitter </a>
+      </p>
+    </div>
+
+    <div class="space-y-4">
+      <h2 class="text-2xl md:text-3xl" id="contact">contact</h2>
+      <p>email is on my github. 👆🏾</p>
+      <p>dms are open.</p>
+    </div>
+  </div>
+
 </main>
 
-<style lang='scss'>
-
-  :global(*) {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+<style lang="scss">
+  :global(body) {
+    background-color: gold;
+    color: black;
   }
 
-  ul {
-    list-style-type: none;
-  }
-
-   a {
-     text-decoration: none;
-     color: black;
+   ul {
+     list-style: '✦ ';
+     list-style-position: inside;
    }
 
-  main {
-    margin: auto;
-    width: clamp(250px, 80%, 500px);
-    min-height: 100vh;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-  }
-
-  header {
-    grid-area: 1 / 2 / 2 / 9;
-    margin: 50px 0 0 0;
-
-    h1 {
-      text-transform: capitalize;
-      font-size: clamp(1.5em, 9vw, 3em);
-    }
-
-    p {
-      font-weight: 300;
-      font-size: clamp(.6em, 3vw, 1em);
-    }
-
-  }
-
-  section {
-    display: flex;
-    flex-direction: column;
-
-    margin-top: 100px;
-
-    .section-label {
-      font-family: 'Times New Roman', Times, serif;
-      font-style: italic;
-      font-size: 1em;
-      font-weight: normal;
-      margin-bottom: 10px;
-      display: inline-block;
-    }
-  }
-
-  #works {
-    grid-area: 3 / 3 / 4 / 5;
-  }
-
-  .works-list {
-    display: flex;
-    flex-direction: column;
-    white-space: nowrap;
-
-    .work-item {
-      margin-bottom: 5px;
-      font-size: 1.2em;
-
-      .work-desc {
-        margin-left: 5px;
-        font-style: italic;
-        font-size: .6em;
-      }
-    }
-  }
-
-  #now {
-    grid-area: 3 / 6 / 5 / 8;
-
-    
-    .now-bubble {
-      background-color: rgba(0, 0, 0, 0.25);
-      width: .3em;
-      height: .3em;
-      border-radius: 100%;
-      display: inline-block;
-      margin-left: 10px;
-
-      &.curr {
-        background-color: black;
-      }
-    }
-  }
-
-  .now-part {
-    display: flex;
-    flex-direction: column;
-
-    .now-title {
-      font-weight: normal;
-      font-size: 1.2em;
-    }
-
-    .now-desc {
-      text-align: justify;
-      letter-spacing: 1.5;
-      line-height: 1.5;
-      margin-bottom: 20px;
-      word-break: break-word;
-    }
-
-  }
-
-  @media screen and (min-width: 1024px) {
-    main {
-      width: 100vw;
-      display: grid;
-      grid-template-columns: repeat(9, 1fr);
-      grid-template-rows: repeat(4, 1fr);
-    }
-
-    header {
-      margin: 0 0 -1em 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-    }
-
-    section {
-      margin-top: -1em;
-    }
-
-    #works {
-      grid-area: 3 / 3 / 5 / 5;
-    }
-
-  }
 </style>
