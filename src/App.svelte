@@ -1,5 +1,6 @@
 <script lang="ts">
   import piccy from "./assets/piccy.png";
+
 </script>
 
 <main
@@ -32,7 +33,7 @@
     <div class="space-y-8">
       <h1 class="text-3xl md:text-4xl">I'm Jordan Bailey 👋🏾</h1>
       <p> i code, design, teach, among other things. </p>
-      <p> accessible quality education for all.  </p>
+      <p> i am an advocate for accessible quality education for all.  </p>
       <p> i enjoy learning about various systems, e.g. engines, game mechanics, computer graphics. </p>
       <p> i play(ed) video games mostly movement shooters, e.g. quake, cs, apex. </p>
     </div>
@@ -64,6 +65,7 @@
     <div class="space-y-4">
       <h2 class="text-2xl md:text-3xl" id="now">now</h2>
       <p>visiting korea.</p>
+      <p>freelancing developer.</p>
       <p>designing and making clothes.</p>
     </div>
 
